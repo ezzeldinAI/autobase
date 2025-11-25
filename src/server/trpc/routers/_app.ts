@@ -1,9 +1,17 @@
+import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { usersTable } from "@/server/db/schema";
-import { baseProcedure, createTRPCRouter } from "../init";
+import { createTRPCRouter, protectedProcedure } from "../init";
+
 export const appRouter = createTRPCRouter({
   users: {
-    getAll: baseProcedure.query(async () => await db.select().from(usersTable)),
+    getAll: protectedProcedure.query(
+      async ({ ctx }) =>
+        await db
+          .select()
+          .from(usersTable)
+          .where(eq(usersTable.id, ctx.auth.user.id))
+    ),
   },
 });
 
