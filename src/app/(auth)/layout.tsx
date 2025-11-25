@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { AuthLayout } from "@/feature/auth/components/layout/auth";
 import { requireUnauth } from "@/lib/auth-utils";
 
 type LayoutProps = {
@@ -8,9 +9,5 @@ type LayoutProps = {
 export default async function AuthenticationLayout(props: LayoutProps) {
   await requireUnauth(); // just for better UX
 
-  return (
-    <section className="flex h-screen items-center justify-center">
-      <div className="w-full max-w-md">{props.children}</div>
-    </section>
-  );
+  return <AuthLayout>{props.children}</AuthLayout>;
 }

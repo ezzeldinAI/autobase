@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -73,6 +74,12 @@ export function LoginForm() {
                     type="button"
                     variant={"outline"}
                   >
+                    <Image
+                      alt="github-logo"
+                      height={20}
+                      src={"./github.svg"}
+                      width={20}
+                    />
                     Continue with GitHub
                   </Button>
 
@@ -82,6 +89,12 @@ export function LoginForm() {
                     type="button"
                     variant={"outline"}
                   >
+                    <Image
+                      alt="google-logo"
+                      height={20}
+                      src={"./google.svg"}
+                      width={20}
+                    />
                     Continue with Google
                   </Button>
                 </div>
@@ -133,7 +146,7 @@ export function LoginForm() {
                 <div className="rounded-md bg-accent p-2 text-center text-sm">
                   Don't have an account?{" "}
                   <Link
-                    className="text-primary underline underline-offset-4"
+                    className="underline underline-offset-4"
                     href="/register"
                   >
                     Register
