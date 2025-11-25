@@ -1,9 +1,12 @@
-import { Button } from "@/components/ui/button";
+import { db } from "@/lib/db";
+import { usersTable } from "@/server/db/schema";
 
-export default function Home() {
+export default async function Home() {
+  const users = await db.select().from(usersTable);
+
   return (
     <section className="flex min-h-screen items-center justify-center bg-neutral-100 dark:bg-background">
-      <Button>Click me</Button>
+      {JSON.stringify(users)}
     </section>
   );
 }
