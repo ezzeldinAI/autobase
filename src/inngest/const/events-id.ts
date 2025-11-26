@@ -1,6 +1,6 @@
 export const CONSTANTS = {
-  BASE: {
-    id: "workflow-creation",
-    event: "workflow/creation",
+  AI: {
+    id: "ask-ai",
+    event: "ai/ask",
   },
 };
