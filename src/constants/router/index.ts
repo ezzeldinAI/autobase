@@ -3,6 +3,7 @@ export const ROUTER_CONSTANTS = {
   AFTER_AUTHENTICATION: "/workflows",
   CREDENTIALS: "/credentials",
   EXECUTIONS: "/executions",
+  LOGIN: "/login",
   // UPGRADE: "/upgrade",
 } as const;
 
