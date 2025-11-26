@@ -1,17 +1,27 @@
-import { eq } from "drizzle-orm";
+import { inngest } from "@/inngest/client";
+import { CONSTANTS } from "@/inngest/const/events-id";
 import { db } from "@/lib/db";
-import { usersTable } from "@/server/db/schema";
-import { createTRPCRouter, protectedProcedure } from "../init";
+import { workflowsTable } from "@/server/db/schema";
+import { createTRPCRouter, protectedProcedure } from "@/server/trpc/init";
 
 export const appRouter = createTRPCRouter({
   users: {
-    getAll: protectedProcedure.query(
-      async ({ ctx }) =>
-        await db
-          .select()
-          .from(usersTable)
-          .where(eq(usersTable.id, ctx.auth.user.id))
+    getAllWorkflows: protectedProcedure.query(
+      async () => await db.select().from(workflowsTable)
     ),
+    createWorkflow: protectedProcedure.mutation(async ({ ctx }) => {
+      await inngest.send({
+        name: CONSTANTS.BASE.event,
+        data: {
+          userID: ctx.auth.user.id,
+        },
+      });
+
+      return {
+        success: true,
+        message: "Job queued",
+      };
+    }),
   },
 });
 

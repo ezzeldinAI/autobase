@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,6 +27,7 @@ import {
   loginResolver,
 } from "@/feature/auth/schemas/login";
 import { authClient } from "@/lib/auth-client";
+import { visualErrorNotify, visualSuccessNotify } from "@/lib/utils";
 
 export function LoginForm() {
   const router = useRouter();
@@ -47,11 +47,11 @@ export function LoginForm() {
       },
       {
         onSuccess: () => {
-          toast.success("Account created successfully, redirecting...");
+          visualSuccessNotify("Account created successfully, redirecting...");
           router.push("/");
         },
         onError: ({ error: { message } }) => {
-          toast.error(message);
+          visualErrorNotify(message);
         },
       }
     );

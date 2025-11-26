@@ -4,5 +4,13 @@ import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 
 export function Logout() {
-  return <Button onClick={() => authClient.signOut()}>Logout</Button>;
+  return (
+    <Button
+      className="w-full"
+      onClick={() => authClient.signOut()}
+      variant={"ghost"}
+    >
+      Logout
+    </Button>
+  );
 }

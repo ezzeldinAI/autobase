@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import { boolean, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("usersTable", {
@@ -72,6 +72,13 @@ export const verificationsTable = pgTable(
   },
   (table) => [index("verification_identifier_idx").on(table.identifier)]
 );
+
+export const workflowsTable = pgTable("workflowsTable", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+});
 
 export const userRelations = relations(usersTable, ({ many }) => ({
   sessions: many(sessionsTable),

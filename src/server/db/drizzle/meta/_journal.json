@@ -15,6 +15,13 @@
       "when": 1764067058740,
       "tag": "0001_fair_otto_octavius",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1764138365333,
+      "tag": "0002_low_songbird",
+      "breakpoints": true
     }
   ]
 }
