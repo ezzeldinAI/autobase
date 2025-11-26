@@ -3,8 +3,8 @@ import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createOpenAI } from "@ai-sdk/openai";
 import { logger } from "@sentry/nextjs";
 import { generateText } from "ai";
-import { inngest } from "./client";
-import { CONSTANTS } from "./const/events-id";
+import { inngest } from "@/inngest/client";
+import { CONSTANTS } from "@/inngest/const/events-id";
 
 const google = createGoogleGenerativeAI();
 const openai = createOpenAI();

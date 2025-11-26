@@ -21,6 +21,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ROUTER_CONSTANTS } from "@/constants/router";
 import {
   type LoginSchemaValues,
   loginDefaultValues,
@@ -43,12 +44,12 @@ export function LoginForm() {
     await authClient.signIn.email(
       {
         ...data,
-        callbackURL: "/",
+        callbackURL: ROUTER_CONSTANTS.AFTER_AUTHENTICATION,
       },
       {
         onSuccess: () => {
           visualSuccessNotify("Account created successfully, redirecting...");
-          router.push("/");
+          router.push(ROUTER_CONSTANTS.AFTER_AUTHENTICATION);
         },
         onError: ({ error: { message } }) => {
           visualErrorNotify(message);

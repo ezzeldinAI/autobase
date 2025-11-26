@@ -22,6 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ROUTER_CONSTANTS } from "@/constants/router";
 import {
   type RegisterSchemaValues,
   registerDefaultValues,
@@ -43,12 +44,12 @@ export function RegisterForm() {
     await authClient.signUp.email(
       {
         ...data,
-        callbackURL: "/",
+        callbackURL: ROUTER_CONSTANTS.AFTER_AUTHENTICATION,
       },
       {
         onSuccess: () => {
           toast.success("Account created successfully, redirecting...");
-          router.push("/");
+          router.push(ROUTER_CONSTANTS.AFTER_AUTHENTICATION);
         },
         onError: ({ error: { message } }) => {
           toast.error(message);

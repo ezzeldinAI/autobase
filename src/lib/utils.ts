@@ -55,3 +55,11 @@ export function visualWarningNotify(msg: string) {
 export function visualInfoNotify(msg: string) {
   notify(msg, "info");
 }
+
+export function initials(name: string) {
+  return name
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
+}

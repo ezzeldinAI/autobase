@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "./auth";
+import { ROUTER_CONSTANTS } from "@/constants/router";
+import { auth } from "@/lib/auth";
 
 export async function requireAuth() {
   const session = await auth.api.getSession({
@@ -20,7 +21,7 @@ export async function requireUnauth() {
   });
 
   if (session) {
-    redirect("/"); // in the future this should be swapped with a "/workflows"
+    redirect(ROUTER_CONSTANTS.BASE);
   }
 
   return session;
