@@ -1,6 +1,7 @@
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createOpenAI } from "@ai-sdk/openai";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { logger } from "@sentry/nextjs";
 import { generateText } from "ai";
 import { inngest } from "@/inngest/client";
@@ -9,6 +10,7 @@ import { CONSTANTS } from "@/inngest/const/events-id";
 const google = createGoogleGenerativeAI();
 const openai = createOpenAI();
 const anthropic = createAnthropic();
+const openrouter = createOpenRouter();
 
 export const askAI = inngest.createFunction(
   { id: CONSTANTS.AI.id },
@@ -23,7 +25,7 @@ export const askAI = inngest.createFunction(
       log_source: "askAI function (this error is thrown on purpose)",
     });
 
-    const { steps: geniniSteps } = await step.ai.wrap(
+    const { steps: geminiSteps } = await step.ai.wrap(
       "gemini-generate-text",
       generateText,
       {
@@ -68,10 +70,26 @@ export const askAI = inngest.createFunction(
       }
     );
 
+    const { steps: grokSteps } = await step.ai.wrap(
+      "grok-generate-text",
+      generateText,
+      {
+        model: openrouter("grok-4.1"),
+        system: "You are a helpful assistant.",
+        prompt: "What's 2 + 2?",
+        experimental_telemetry: {
+          isEnabled: true,
+          recordInputs: true,
+          recordOutputs: true,
+        },
+      }
+    );
+
     return {
-      geniniSteps,
+      geminiSteps,
       openaiSteps,
       anthropicSteps,
+      grokSteps,
     };
   }
 );

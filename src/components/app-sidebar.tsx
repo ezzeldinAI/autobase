@@ -1,5 +1,5 @@
 /** biome-ignore-all lint/style/noNestedTernary: We can let this one slide, but just this one time */
-/** biome-ignore-all lint/complexity/noExcessiveCognitiveComplexity: <explanation> */
+/** biome-ignore-all lint/complexity/noExcessiveCognitiveComplexity: False positive */
 "use client";
 
 import {

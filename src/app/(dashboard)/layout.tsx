@@ -10,7 +10,10 @@ export default async function DashboardLayout(props: LayoutProps) {
   await requireAuth();
 
   return (
-    <SidebarProvider className="flex h-screen overflow-hidden">
+    <SidebarProvider
+      className="flex h-screen overflow-hidden"
+      defaultOpen={false}
+    >
       <AppSidebar />
 
       <SidebarInset className="flex flex-1 flex-col overflow-hidden bg-accent/20">

@@ -1,6 +1,7 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq, ilike } from "drizzle-orm";
 import { generateSlug } from "random-word-slugs";
 import { z } from "zod";
+import { PAGINATION } from "@/constants/pagination";
 import { db } from "@/lib/db";
 import { workflowsTable } from "@/server/db/schema";
 import {
@@ -40,14 +41,52 @@ export const workflowsRouter = createTRPCRouter({
             )
           )
     ),
-    all: protectedProcedure.query(
-      async ({ ctx }) =>
-        await db
-          .select()
-          .from(workflowsTable)
-          .where(eq(workflowsTable.userId, ctx.auth.user.id))
-          .orderBy(desc(workflowsTable.createdAt))
-    ),
+    all: protectedProcedure
+      .input(
+        z.object({
+          page: z.number().default(PAGINATION.DEFAULT_PAGE),
+          pageSize: z
+            .number()
+            .min(PAGINATION.MIN_PAGE_SIZE)
+            .max(PAGINATION.MAX_PAGE_SIZE)
+            .default(PAGINATION.DEFAULT_PAGE_SIZE),
+          search: z.string().default(""),
+        })
+      )
+      .query(async ({ ctx, input }) => {
+        const { page, pageSize, search } = input;
+
+        const whereConditions = and(
+          eq(workflowsTable.userId, ctx.auth.user.id),
+          search ? ilike(workflowsTable.name, `%${search}%`) : undefined
+        );
+
+        const [items, [{ value: totalCount }]] = await Promise.all([
+          db
+            .select()
+            .from(workflowsTable)
+            .where(whereConditions)
+            .orderBy(desc(workflowsTable.updatedAt))
+            .limit(pageSize)
+            .offset((page - 1) * pageSize),
+          db
+            .select({ value: count() })
+            .from(workflowsTable)
+            .where(whereConditions),
+        ]);
+
+        const totalPages = Math.ceil(totalCount / pageSize);
+
+        return {
+          items,
+          totalCount,
+          page,
+          pageSize,
+          totalPages,
+          hasNextPage: page < totalPages,
+          hasPreviousPage: page > 1,
+        };
+      }),
   },
   update: {
     name: protectedProcedure

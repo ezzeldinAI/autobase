@@ -1,7 +1,14 @@
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, SearchIcon } from "lucide-react";
 import Link from "next/link";
 import type { PropsWithChildren } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 
 export type EntityHeaderProps = {
@@ -68,15 +75,94 @@ type EntityContainerProps = PropsWithChildren & {
   pagination?: React.ReactNode;
 };
 
-export const EntityContainer = (props: EntityContainerProps) => (
-  <div className="h-full p-4 md:px-10 md:py-6">
-    <div className="mx-auto flex h-full w-full max-w-7xl flex-col gap-y-8">
-      {props.header}
-      <div className="flex h-full flex-col gap-y-4">
-        {props.search}
-        {props.children}
+export function EntityContainer(props: EntityContainerProps) {
+  return (
+    <div className="h-full p-4 md:px-10 md:py-6">
+      <div className="mx-auto flex h-full w-full max-w-7xl flex-col gap-y-8">
+        {props.header}
+        <div className="flex h-full flex-col gap-y-4">
+          <section className="flex flex-row items-center justify-end gap-x-4">
+            {props.search}
+          </section>
+          <ScrollArea className="w-full overflow-y-hidden rounded-md bg-neutral-100 p-2 ring ring-border">
+            {props.children}
+          </ScrollArea>
+        </div>
+        {props.pagination}
       </div>
-      {props.pagination}
     </div>
-  </div>
-);
+  );
+}
+
+type EntitySearchProps = {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+};
+
+export function EntitySearch(props: EntitySearchProps) {
+  return (
+    <InputGroup className="w-[25vw]">
+      <InputGroupInput
+        onChange={(e) => props.onChange(e.target.value)}
+        placeholder={props.placeholder}
+        value={props.value}
+      />
+      <InputGroupAddon align={"inline-start"}>
+        <InputGroupButton>
+          <SearchIcon className="size-4" />
+        </InputGroupButton>
+      </InputGroupAddon>
+    </InputGroup>
+  );
+}
+
+type EntityPaginationProps = {
+  page: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  disabled?: boolean;
+  isLoadingPrev?: boolean;
+  isLoadingNext?: boolean;
+};
+
+export function EntityPagination(props: EntityPaginationProps) {
+  return (
+    <div className="flex w-full items-center justify-between gap-x-2">
+      <div className="flex-1 text-muted-foreground text-sm">
+        Page {props.page} of {props.totalPages || 1}
+      </div>
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <Button
+          disabled={
+            props.page === 1 ||
+            props.disabled ||
+            props.isLoadingPrev ||
+            props.isLoadingNext
+          }
+          onClick={() => props.onPageChange(Math.max(1, props.page - 1))}
+          size="sm"
+          variant="outline"
+        >
+          {props.isLoadingPrev ? <Spinner className="size-4" /> : "Previous"}
+        </Button>
+        <Button
+          disabled={
+            props.page === props.totalPages ||
+            props.totalPages === 0 ||
+            props.disabled ||
+            props.isLoadingPrev ||
+            props.isLoadingNext
+          }
+          onClick={() =>
+            props.onPageChange(Math.min(props.totalPages, props.page + 1))
+          }
+          size="sm"
+          variant="outline"
+        >
+          {props.isLoadingNext ? <Spinner className="size-4" /> : "Next"}
+        </Button>
+      </div>
+    </div>
+  );
+}
