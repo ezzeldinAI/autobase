@@ -1,4 +1,5 @@
 /** biome-ignore-all lint/style/noNestedTernary: We can let this one slide, but just this one time */
+/** biome-ignore-all lint/complexity/noExcessiveCognitiveComplexity: <explanation> */
 "use client";
 
 import {
@@ -71,6 +72,7 @@ export function AppSidebar() {
   const [isUpgradeButtonLoading, setIsUpgradeButtonLoading] =
     useState<boolean>(false);
   const { hasActiveSubscription, isLoading } = useHasActiveSubscription();
+  const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
 
   return (
     <Sidebar collapsible="icon">
@@ -174,16 +176,30 @@ export function AppSidebar() {
         <SidebarMenuItem className="flex max-h-12 items-center overflow-hidden">
           <SidebarMenuButton
             className="h-10 gap-x-4 bg-destructive/25 px-4 text-destructive hover:bg-destructive/35 hover:text-destructive"
+            disabled={isLoggingOut}
             onClick={() => {
+              setIsLoggingOut(true);
               authClient.signOut();
+              setIsLoggingOut(false);
               router.push(ROUTER_CONSTANTS.LOGIN);
             }}
             tooltip={"Logout"}
           >
-            <LogOutIcon />
-            <span className="flex flex-1 items-center gap-2 text-xs">
-              Logout
-            </span>
+            {isLoggingOut ? (
+              <>
+                <Spinner className="size-4" />
+                <span className="flex flex-1 items-center gap-2 text-xs">
+                  Logging out...
+                </span>
+              </>
+            ) : (
+              <>
+                <LogOutIcon />
+                <span className="flex flex-1 items-center gap-2 text-xs">
+                  {isLoggingOut ? "Logging out..." : "Logout"}
+                </span>
+              </>
+            )}
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarFooter>

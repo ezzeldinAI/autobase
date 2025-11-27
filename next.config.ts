@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  typedRoutes: true,
+  // typedRoutes: true,
   experimental: {
     typedEnv: true,
   },

@@ -78,11 +78,21 @@ export const workflowsTable = pgTable("workflowsTable", {
     .primaryKey()
     .$defaultFn(() => sql`gen_random_uuid()`),
   name: text("name").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+
+  userId: text("user_id")
+    .notNull()
+    .references(() => usersTable.id, { onDelete: "cascade" }),
 });
 
 export const userRelations = relations(usersTable, ({ many }) => ({
   sessions: many(sessionsTable),
   accounts: many(accountsTable),
+  workflows: many(workflowsTable),
 }));
 
 export const sessionRelations = relations(sessionsTable, ({ one }) => ({

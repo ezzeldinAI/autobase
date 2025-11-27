@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/nursery/noSyncScripts: Needed for react-scan */
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
@@ -21,6 +22,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script
+          crossOrigin="anonymous"
+          src="//unpkg.com/react-scan/dist/auto.global.js"
+        />
+      </head>
       <body className={cn("antialiased", font.className)}>
         <TRPCReactProvider>{children}</TRPCReactProvider>
         <Toaster richColors={true} />
