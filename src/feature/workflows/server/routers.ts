@@ -12,7 +12,7 @@ import {
 
 export const workflowsRouter = createTRPCRouter({
   create: premiumProcedure.mutation(async ({ ctx }) => {
-    const row = await db
+    const res = await db
       .insert(workflowsTable)
       .values({
         name: generateSlug(3),
@@ -23,8 +23,8 @@ export const workflowsRouter = createTRPCRouter({
     return {
       success: true,
       data: {
-        id: row[0].id,
-        name: row[0].name,
+        id: res[0].id,
+        name: res[0].name,
       },
     };
   }),
@@ -106,15 +106,23 @@ export const workflowsRouter = createTRPCRouter({
   },
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .mutation(
-      async ({ ctx, input }) =>
-        await db
-          .delete(workflowsTable)
-          .where(
-            and(
-              eq(workflowsTable.userId, ctx.auth.user.id),
-              eq(workflowsTable.id, input.id)
-            )
+    .mutation(async ({ ctx, input }) => {
+      const res = await db
+        .delete(workflowsTable)
+        .where(
+          and(
+            eq(workflowsTable.userId, ctx.auth.user.id),
+            eq(workflowsTable.id, input.id)
           )
-    ),
+        )
+        .returning();
+
+      return {
+        success: true,
+        data: {
+          id: res[0].id,
+          name: res[0].name,
+        },
+      };
+    }),
 });

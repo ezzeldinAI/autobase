@@ -1,9 +1,10 @@
 import type { SearchParams } from "nuqs/server";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { Spinner } from "@/components/ui/spinner";
 import {
   WorkflowContainer,
+  WorkflowError,
+  WorkflowLoading,
   WorkflowsList,
 } from "@/feature/workflows/components/workflows";
 import { workflowsParamsLoader } from "@/feature/workflows/server/params-loader";
@@ -20,8 +21,8 @@ export default async function WorkflowsPage(props: WorkflowsPageProps) {
   return (
     <WorkflowContainer>
       <HydrateClient>
-        <ErrorBoundary fallback={<div>Error!</div>}>
-          <Suspense fallback={<Spinner className="size-4" />}>
+        <ErrorBoundary fallback={<WorkflowError />}>
+          <Suspense fallback={<WorkflowLoading />}>
             <WorkflowsList />
           </Suspense>
         </ErrorBoundary>

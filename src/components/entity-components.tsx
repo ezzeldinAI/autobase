@@ -1,7 +1,28 @@
-import { PlusIcon, SearchIcon } from "lucide-react";
+import {
+  AlertTriangleIcon,
+  MoreVerticalIcon,
+  PackageOpenIcon,
+  PlusIcon,
+  SearchIcon,
+  TrashIcon,
+} from "lucide-react";
 import Link from "next/link";
 import type { PropsWithChildren } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import {
   InputGroup,
   InputGroupAddon,
@@ -10,6 +31,8 @@ import {
 } from "@/components/ui/input-group";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
+import { cn } from "@/lib/utils";
+import { Card, CardContent, CardDescription, CardTitle } from "./ui/card";
 
 export type EntityHeaderProps = {
   title: string;
@@ -84,9 +107,7 @@ export function EntityContainer(props: EntityContainerProps) {
           <section className="flex flex-row items-center justify-end gap-x-4">
             {props.search}
           </section>
-          <ScrollArea className="w-full overflow-y-hidden rounded-md bg-neutral-100 p-2 ring ring-border">
-            {props.children}
-          </ScrollArea>
+          {props.children}
         </div>
         {props.pagination}
       </div>
@@ -164,5 +185,190 @@ export function EntityPagination(props: EntityPaginationProps) {
         </Button>
       </div>
     </div>
+  );
+}
+
+type StateViewProps = {
+  message?: string;
+};
+
+type LoadingViewProps = StateViewProps & {
+  entity?: string;
+};
+
+export function LoadingView(props: LoadingViewProps) {
+  return (
+    <div className="flex h-full flex-1 flex-col items-center justify-center gap-y-4">
+      <Spinner className="size-6 text-muted-foreground" />
+      {props.message ? (
+        <p className="text-muted-foreground text-sm">{props.message}</p>
+      ) : null}
+    </div>
+  );
+}
+
+export function ErrorView(props: StateViewProps) {
+  return (
+    <div className="flex h-full flex-1 flex-col items-center justify-center gap-y-4">
+      <AlertTriangleIcon className="size-6 text-muted-foreground" />
+      {props.message ? (
+        <p className="text-muted-foreground text-sm">{props.message}</p>
+      ) : null}
+    </div>
+  );
+}
+
+type EmptyView = StateViewProps & {
+  onNew?: () => void;
+};
+
+export function EmptyView(props: EmptyView) {
+  return (
+    <Empty className="border border-dashed bg-background">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <PackageOpenIcon className="size-12 text-muted-foreground" />
+        </EmptyMedia>
+      </EmptyHeader>
+      <EmptyTitle>No workflows found</EmptyTitle>
+      {props.message ? (
+        <EmptyDescription>{props.message}</EmptyDescription>
+      ) : null}
+
+      {/* TODO: find a way to add a "clear search" button for better UX */}
+
+      {props.onNew ? (
+        <EmptyContent>
+          <Button onClick={props.onNew}>
+            <PlusIcon className="size-4" />
+            New workflow
+          </Button>
+        </EmptyContent>
+      ) : null}
+    </Empty>
+  );
+}
+
+type EntityListProps<T> = {
+  items: T[];
+  renderItem: (item: T, index: number) => React.ReactNode;
+  getKey?: (item: T, index: number) => string | number;
+  emptyView?: React.ReactNode;
+  className?: string;
+};
+
+export function EntityList<T>(props: EntityListProps<T>) {
+  if (props.items.length === 0 && props.emptyView) {
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <div className="mx-auto max-w-sm">{props.emptyView}</div>
+      </div>
+    );
+  }
+
+  return (
+    <ScrollArea
+      className={cn(
+        "max-h-fit min-h-fit w-full overflow-y-hidden rounded-md bg-neutral-200/50 p-2 ring ring-border",
+        props.className
+      )}
+    >
+      {props.items.map((item, index) => (
+        <div
+          className="my-2"
+          key={props.getKey ? props.getKey(item, index) : index}
+        >
+          {props.renderItem(item, index)}
+        </div>
+      ))}
+    </ScrollArea>
+  );
+}
+
+type EntityItemProps = {
+  href: string;
+  title: string;
+  subtitle?: React.ReactNode;
+  image?: React.ReactNode;
+  actions?: React.ReactNode;
+  onRemove?: () => void | Promise<void>;
+  isRemoving?: boolean;
+  className?: string;
+};
+
+export function EntityItem(props: EntityItemProps) {
+  const handleRemove = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (props.isRemoving) {
+      return;
+    }
+
+    if (props.onRemove) {
+      await props.onRemove();
+    }
+  };
+
+  return (
+    <Link href={props.href} prefetch>
+      <Card
+        className={cn(
+          "cursor-pointer p-4 shadow-none hover:shadow",
+          props.isRemoving && "cursor-not-allowed opacity-50",
+          props.className
+        )}
+      >
+        <CardContent className="flex flex-row items-center justify-between p-0">
+          <div className="flex items-center gap-3">
+            {props.image}
+            <div>
+              <CardTitle className="font-medium text-base">
+                {props.title}
+              </CardTitle>
+              {!!props.subtitle && (
+                <CardDescription className="text-xs">
+                  {props.subtitle}
+                </CardDescription>
+              )}
+            </div>
+          </div>
+          {(props.actions || props.onRemove) && (
+            <div className="flex items-center gap-x-4">
+              {props.actions}
+              {props.onRemove && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      onClick={(e) => e.stopPropagation()}
+                      size="icon"
+                      variant="ghost"
+                    >
+                      <MoreVerticalIcon className="size-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <DropdownMenuItem
+                      disabled={props.isRemoving}
+                      onClick={handleRemove}
+                    >
+                      {props.isRemoving ? (
+                        <Spinner className="size-4" />
+                      ) : (
+                        <TrashIcon className="size-4" />
+                      )}
+                      {props.isRemoving ? "Deleting..." : "Delete"}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </Link>
   );
 }

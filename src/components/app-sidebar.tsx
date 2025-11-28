@@ -121,9 +121,10 @@ export function AppSidebar() {
         {isLoading ? (
           <SidebarMenuItem>
             <Skeleton className="flex h-10 w-full items-center justify-start px-2">
-              <p className="h-4 text-muted-foreground text-xs">
+              <p className="h-4 text-muted-foreground text-xs group-data-[!collapsible=icon]:flex group-data-[collapsible=icon]:hidden">
                 Getting Billing Status...
               </p>
+              <Spinner className="size-4 group-data-[collapsible=icon]:flex group-data-[!collapsible=icon]:hidden" />
             </Skeleton>
           </SidebarMenuItem>
         ) : hasActiveSubscription ? (
