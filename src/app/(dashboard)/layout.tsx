@@ -1,6 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { AppHeader } from "@/components/app-header";
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/app/sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { requireAuth } from "@/lib/auth-utils";
 
@@ -17,8 +16,7 @@ export default async function DashboardLayout(props: LayoutProps) {
       <AppSidebar />
 
       <SidebarInset className="flex flex-1 flex-col overflow-hidden bg-accent/20">
-        <AppHeader />
-        <div className="flex-1 overflow-auto p-4">{props.children}</div>
+        <div className="flex-1 overflow-auto">{props.children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { and, count, desc, eq, ilike } from "drizzle-orm";
 import { generateSlug } from "random-word-slugs";
 import { z } from "zod";
@@ -20,6 +21,13 @@ export const workflowsRouter = createTRPCRouter({
       })
       .returning();
 
+    if (!res) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to create workflow",
+      });
+    }
+
     return {
       success: true,
       data: {
@@ -29,9 +37,10 @@ export const workflowsRouter = createTRPCRouter({
     };
   }),
   read: {
-    one: protectedProcedure.input(z.object({ id: z.string() })).query(
-      async ({ ctx, input }) =>
-        await db
+    one: protectedProcedure
+      .input(z.object({ id: z.string() }))
+      .query(async ({ ctx, input }) => {
+        const res = await db
           .select()
           .from(workflowsTable)
           .where(
@@ -39,8 +48,23 @@ export const workflowsRouter = createTRPCRouter({
               eq(workflowsTable.userId, ctx.auth.user.id),
               eq(workflowsTable.id, input.id)
             )
-          )
-    ),
+          );
+
+        if (!res) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Workflow not found",
+          });
+        }
+
+        return {
+          success: true,
+          data: {
+            id: res[0].id,
+            name: res[0].name,
+          },
+        };
+      }),
     all: protectedProcedure
       .input(
         z.object({
@@ -91,18 +115,33 @@ export const workflowsRouter = createTRPCRouter({
   update: {
     name: protectedProcedure
       .input(z.object({ id: z.string(), name: z.string().min(3).max(25) }))
-      .mutation(
-        async ({ ctx, input }) =>
-          await db
-            .update(workflowsTable)
-            .set({ name: input.name })
-            .where(
-              and(
-                eq(workflowsTable.userId, ctx.auth.user.id),
-                eq(workflowsTable.id, input.id)
-              )
+      .mutation(async ({ ctx, input }) => {
+        const res = await db
+          .update(workflowsTable)
+          .set({ name: input.name })
+          .where(
+            and(
+              eq(workflowsTable.userId, ctx.auth.user.id),
+              eq(workflowsTable.id, input.id)
             )
-      ),
+          )
+          .returning();
+
+        if (!res) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Workflow not found",
+          });
+        }
+
+        return {
+          success: true,
+          data: {
+            id: res[0].id,
+            name: res[0].name,
+          },
+        };
+      }),
   },
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
@@ -116,6 +155,13 @@ export const workflowsRouter = createTRPCRouter({
           )
         )
         .returning();
+
+      if (!res) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to delete workflow",
+        });
+      }
 
       return {
         success: true,

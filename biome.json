@@ -12,6 +12,7 @@
       "!node_modules",
       "!.next",
       "!dist",
+      "!src/components/ui",
       "!build"
     ]
   },
@@ -40,8 +41,5 @@
       }
     }
   },
-  "extends": [
-    "ultracite/core",
-    "ultracite/next"
-  ]
+  "extends": ["ultracite/core", "ultracite/next"]
 }

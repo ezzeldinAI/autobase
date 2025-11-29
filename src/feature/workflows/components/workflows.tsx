@@ -53,9 +53,6 @@ export function WorkflowsHeader(props: WorkflowsHeaderProps) {
         handleError(error);
       },
       onSuccess: ({ data }) => {
-        // Note: this is just for development purposes,
-        // In the future make it a toggle to let the user decide. Through a dedicated page
-        // router.push(`/workflows/${data.id}`);
         visualSuccessNotify(
           `Workflow created successfully, redirecting you to "${data.name}"`
         );

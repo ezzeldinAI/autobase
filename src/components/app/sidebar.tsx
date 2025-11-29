@@ -15,7 +15,7 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-import { Logo } from "@/components/logo";
+import { Logo } from "@/components/primitives/logo";
 import { Separator } from "@/components/ui/separator";
 import {
   Sidebar,
@@ -82,49 +82,60 @@ export function AppSidebar() {
           <Logo />
         </SidebarMenuItem>
       </SidebarHeader>
-      <div className="mx-2">
-        <Separator />
-      </div>
+
+      <SidebarSeparator />
+
       <SidebarContent>
         {menuItems.map((group) => (
           <SidebarGroup key={group.title}>
             <SidebarGroupContent className="space-y-3">
-              {group.items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    asChild
-                    className="h-10 gap-x-4 px-4"
-                    isActive={
-                      item.href === ROUTER_CONSTANTS.BASE
-                        ? pathname === ROUTER_CONSTANTS.BASE
-                        : pathname.startsWith(item.href)
-                    }
-                    tooltip={item.title}
-                  >
-                    <Link href={item.href} prefetch>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {group.items.map((item) => {
+                if (pathname === item.href) {
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton
+                        className="h-10 gap-x-4 px-4"
+                        isActive
+                        tooltip={item.title}
+                      >
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                }
+
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      className="h-10 gap-x-4 px-4"
+                      isActive={false}
+                      tooltip={item.title}
+                    >
+                      <Link href={item.href} prefetch>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarGroupContent>
           </SidebarGroup>
         ))}
       </SidebarContent>
 
-      <div className="mx-2">
-        <Separator />
-      </div>
+      <SidebarSeparator />
 
       <SidebarFooter>
         {isLoading ? (
           <SidebarMenuItem>
             <Skeleton className="flex h-10 w-full items-center justify-start px-2">
+              <Spinner className="size-4 group-data-[collapsible=icon]:flex group-data-[!collapsible=icon]:hidden" />
               <p className="h-4 text-muted-foreground text-xs group-data-[!collapsible=icon]:flex group-data-[collapsible=icon]:hidden">
                 Getting Billing Status...
               </p>
-              <Spinner className="size-4 group-data-[collapsible=icon]:flex group-data-[!collapsible=icon]:hidden" />
             </Skeleton>
           </SidebarMenuItem>
         ) : hasActiveSubscription ? (
@@ -205,5 +216,13 @@ export function AppSidebar() {
         </SidebarMenuItem>
       </SidebarFooter>
     </Sidebar>
+  );
+}
+
+function SidebarSeparator() {
+  return (
+    <div className="mx-2">
+      <Separator />
+    </div>
   );
 }

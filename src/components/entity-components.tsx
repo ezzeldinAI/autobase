@@ -4,7 +4,7 @@ import {
   PackageOpenIcon,
   PlusIcon,
   SearchIcon,
-  TrashIcon,
+  Trash2Icon,
 } from "lucide-react";
 import Link from "next/link";
 import type { PropsWithChildren } from "react";
@@ -358,7 +358,7 @@ export function EntityItem(props: EntityItemProps) {
                       {props.isRemoving ? (
                         <Spinner className="size-4" />
                       ) : (
-                        <TrashIcon className="size-4" />
+                        <Trash2Icon className="size-4" />
                       )}
                       {props.isRemoving ? "Deleting..." : "Delete"}
                     </DropdownMenuItem>

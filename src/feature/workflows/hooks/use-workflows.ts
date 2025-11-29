@@ -4,7 +4,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { useWorkflowsParams } from "@/feature/workflows/hooks/use-workflows-params";
-import { visualErrorNotify } from "@/lib/utils";
+import { visualErrorNotify, visualSuccessNotify } from "@/lib/utils";
 import { useTRPC } from "@/server/trpc/client";
 
 /**
@@ -31,9 +31,7 @@ export function useCreateWorkflow() {
       onSuccess: () => {
         // Note: the following is useful for default better UX experience (but might be a better developer practice to explicitly dictate the message to be visually displayed)
         // visualSuccessNotify(`Workflow "${data.name}" created successfully`);
-        queryClient.invalidateQueries(
-          trpc.workflows.read.all.queryOptions({}) // I pass in empty params to invalidate all workflows
-        );
+        queryClient.invalidateQueries(trpc.workflows.read.all.queryOptions({}));
       },
       onError: (error) => {
         visualErrorNotify(`Failed to create workflow: ${error.message}`);
@@ -41,6 +39,7 @@ export function useCreateWorkflow() {
     })
   );
 }
+
 /**
  * Hook to remove a workflow
  */
@@ -55,6 +54,35 @@ export function useRemoveWorkflow() {
       },
       onError: (error) => {
         visualErrorNotify(`Failed to remove workflow: ${error.message}`);
+      },
+    })
+  );
+}
+
+/**
+ * Hook to fetch a single workflow using suspense
+ */
+export function useSuspenseWorkflow(id: string) {
+  const trpc = useTRPC();
+  return useSuspenseQuery(trpc.workflows.read.one.queryOptions({ id }));
+}
+
+/**
+ * Hook to update a workflow name
+ */
+export function useUpdateWorkflowName() {
+  const queryClient = useQueryClient();
+  const trpc = useTRPC();
+
+  return useMutation(
+    trpc.workflows.update.name.mutationOptions({
+      onSuccess: ({ data }) => {
+        // Note: the following is useful for default better UX experience (but might be a better developer practice to explicitly dictate the message to be visually displayed)
+        visualSuccessNotify(`Workflow "${data.name}" updated successfully`);
+        queryClient.invalidateQueries(trpc.workflows.read.all.queryOptions({}));
+      },
+      onError: (error) => {
+        visualErrorNotify(`Failed to update workflow: ${error.message}`);
       },
     })
   );

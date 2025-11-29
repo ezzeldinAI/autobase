@@ -1,6 +1,6 @@
 import { TRPCClientError } from "@trpc/client";
 import { useState } from "react";
-import { UpgradeModal } from "@/components/upgrade-modal";
+import { UpgradeModal } from "@/components/modals/payments/upgrade-modal";
 
 export function useUpgradeModal() {
   const [open, setOpen] = useState(false);
