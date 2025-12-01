@@ -13,10 +13,6 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  // typedRoutes: true,
-  experimental: {
-    typedEnv: true,
-  },
   reactCompiler: true,
   devIndicators: false,
 };

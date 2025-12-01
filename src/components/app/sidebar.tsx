@@ -131,7 +131,7 @@ export function AppSidebar() {
       <SidebarFooter>
         {isLoading ? (
           <SidebarMenuItem>
-            <Skeleton className="flex h-10 w-full items-center justify-start px-2">
+            <Skeleton className="flex h-10 w-full items-center justify-start gap-2 px-2">
               <Spinner className="size-4 group-data-[collapsible=icon]:flex group-data-[!collapsible=icon]:hidden" />
               <p className="h-4 text-muted-foreground text-xs group-data-[!collapsible=icon]:flex group-data-[collapsible=icon]:hidden">
                 Getting Billing Status...

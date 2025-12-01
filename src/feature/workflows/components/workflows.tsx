@@ -3,6 +3,7 @@
 import { formatDistanceToNow } from "date-fns";
 import { WorkflowIcon } from "lucide-react";
 import { type PropsWithChildren, useState } from "react";
+import { toast } from "sonner";
 import {
   EmptyView,
   EntityContainer,
@@ -23,7 +24,6 @@ import {
 import { useWorkflowsParams } from "@/feature/workflows/hooks/use-workflows-params";
 import { useEntitySearch } from "@/hooks/use-entity-search";
 import { useUpgradeModal } from "@/hooks/use-upgrade-modal";
-import { visualErrorNotify, visualSuccessNotify } from "@/lib/utils";
 import type { Workflow } from "@/server/db/types";
 
 export function WorkflowsList() {
@@ -48,16 +48,14 @@ export function WorkflowsHeader(props: WorkflowsHeaderProps) {
   const { handleError, modal } = useUpgradeModal();
 
   function handleCreate() {
-    createWorkflow.mutate(undefined, {
-      onError: (error) => {
-        handleError(error);
-      },
-      onSuccess: ({ data }) => {
-        visualSuccessNotify(
-          `Workflow created successfully, redirecting you to "${data.name}"`
-        );
-      },
-    });
+    createWorkflow.mutate(
+      {},
+      {
+        onError: (error) => {
+          handleError(error);
+        },
+      }
+    );
   }
 
   return (
@@ -134,14 +132,17 @@ export function WorkflowEmpty() {
   const { handleError, modal } = useUpgradeModal();
 
   function handleCreate() {
-    createWorkflow.mutate(undefined, {
-      onError: (error) => {
-        handleError(error);
-      },
-      // onSuccess: ({ data }) => {
-      //   redirect to that workflow and visually show it a success conformation
-      // },
-    });
+    createWorkflow.mutate(
+      {},
+      {
+        onError: (error) => {
+          handleError(error);
+        },
+        // onSuccess: ({ data }) => {
+        //   redirect to that workflow and visually show it a success conformation
+        // },
+      }
+    );
   }
 
   return (
@@ -168,12 +169,10 @@ export function WorkflowItem(props: WorkflowItemProps) {
       { id: props.data.id },
       {
         onSuccess: () => {
-          visualSuccessNotify(
-            `Workflow "${props.data.name}" removed successfully`
-          );
+          toast.success(`Workflow "${props.data.name}" removed successfully`);
         },
         onError: (error) => {
-          visualErrorNotify(`Failed to remove workflow: ${error.message}`);
+          toast.error(`Failed to remove workflow: ${error.message}`);
         },
         onSettled: () => {
           // Re-enable after invalidation settles (Note: find a better way)

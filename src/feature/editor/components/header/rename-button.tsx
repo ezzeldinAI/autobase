@@ -21,9 +21,7 @@ import {
 } from "@/feature/workflows/hooks/use-workflows";
 
 export function EditorRenameButton({ workflowId }: { workflowId: string }) {
-  const {
-    data: { data: workflow },
-  } = useSuspenseWorkflow(workflowId);
+  const { data: workflow } = useSuspenseWorkflow(workflowId);
 
   const renameWorkflow = useUpdateWorkflowName();
 
