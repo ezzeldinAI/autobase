@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/correctness/useExhaustiveDependencies: false positive */
 import { useEffect, useRef, useState } from "react";
 import { PAGINATION } from "@/constants/pagination";
 

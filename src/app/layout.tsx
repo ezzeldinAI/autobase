@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/nursery/noSyncScripts: Needed for react-scan */
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";

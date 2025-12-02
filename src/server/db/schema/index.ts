@@ -1,6 +1,4 @@
-/** biome-ignore-all lint/style/noEnum: false positive */
-/** biome-ignore-all lint/suspicious/noExplicitAny: false positive */
-import { relations, sql } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -23,9 +21,7 @@ import {
 */
 
 export const usersTable = pgTable("usersTable", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => sql`gen_random_uuid()`),
+  id: text("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
@@ -57,9 +53,7 @@ export const userRelations = relations(usersTable, ({ many }) => ({
 export const sessionsTable = pgTable(
   "sessionsTable",
   {
-    id: text("id")
-      .primaryKey()
-      .$defaultFn(() => sql`gen_random_uuid()`),
+    id: text("id").primaryKey(),
     expiresAt: timestamp("expires_at").notNull(),
     token: text("token").notNull().unique(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -96,9 +90,7 @@ export const sessionRelations = relations(sessionsTable, ({ one }) => ({
 export const accountsTable = pgTable(
   "accountsTable",
   {
-    id: text("id")
-      .primaryKey()
-      .$defaultFn(() => sql`gen_random_uuid()`),
+    id: text("id").primaryKey(),
     accountId: text("account_id").notNull(),
     providerId: text("provider_id").notNull(),
     userId: text("user_id")
@@ -140,9 +132,7 @@ export const accountRelations = relations(accountsTable, ({ one }) => ({
 export const verificationsTable = pgTable(
   "verificationsTable",
   {
-    id: text("id")
-      .primaryKey()
-      .$defaultFn(() => sql`gen_random_uuid()`),
+    id: text("id").primaryKey(),
     identifier: text("identifier").notNull(),
     value: text("value").notNull(),
     expiresAt: timestamp("expires_at").notNull(),
@@ -167,9 +157,7 @@ export const verificationsTable = pgTable(
 */
 
 export const workflowsTable = pgTable("workflowsTable", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => sql`gen_random_uuid()`),
+  id: text("id").primaryKey(),
   name: text("name").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
@@ -203,7 +191,9 @@ export const workflowRelations = relations(workflowsTable, ({ one, many }) => ({
 */
 
 export enum NodeType {
-  INITIAL = "Initial",
+  INITIAL = "INITIAL",
+  MANUAL_TRIGGER = "MANUAL_TRIGGER",
+  HTTP_REQUEST = "HTTP_REQUEST",
 }
 export default NodeType;
 
@@ -216,10 +206,7 @@ export function enumToPgEnum<T extends Record<string, any>>(
 export const nodeTypeEnum = pgEnum("role", enumToPgEnum(NodeType));
 
 export const nodesTable = pgTable("nodesTable", {
-  id: text("id")
-    .primaryKey()
-    .unique()
-    .$defaultFn(() => sql`gen_random_uuid()`),
+  id: text("id").primaryKey().unique(),
   workflowId: text("workflow_id")
     .notNull()
     .references(() => workflowsTable.id, { onDelete: "cascade" }),
@@ -256,9 +243,7 @@ export const nodeRelations = relations(nodesTable, ({ one, many }) => ({
 */
 
 export const connectionsTable = pgTable("connectionsTable", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => sql`gen_random_uuid()`),
+  id: text("id").primaryKey(),
   workflowId: text("workflow_id").notNull(),
 
   fromNodeId: text("from_node_id").notNull(),

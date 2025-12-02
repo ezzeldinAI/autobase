@@ -1,5 +1,6 @@
-/** biome-ignore-all lint/style/noNestedTernary: We can let this one slide, but just this one time */
-/** biome-ignore-all lint/complexity/noExcessiveCognitiveComplexity: False positive */
+/** biome-ignore-all lint/complexity/noExcessiveCognitiveComplexity: biome is correct for
+ * pointing this out, we need to find a better to code this ternary mess, common we ain't junior devs
+ */
 "use client";
 
 import {

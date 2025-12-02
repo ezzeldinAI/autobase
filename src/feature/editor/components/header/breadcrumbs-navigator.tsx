@@ -23,6 +23,7 @@ import { ROUTER_CONSTANTS } from "@/constants/router";
 import {
   useCreateWorkflow,
   useRemoveWorkflow,
+  useSuspenseWorkflow,
   useSuspenseWorkflows,
 } from "@/feature/workflows/hooks/use-workflows";
 import { useUpgradeModal } from "@/hooks/use-upgrade-modal";
@@ -38,9 +39,7 @@ export function EditorHeaderBreadcrumbsNavigator({
   const { handleError, modal } = useUpgradeModal();
 
   const workflows = useSuspenseWorkflows();
-  const activeWorkflow = workflows.data.items.find(
-    (workflow) => workflow.id === workflowId
-  );
+  const activeWorkflow = useSuspenseWorkflow(workflowId);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -89,7 +88,7 @@ export function EditorHeaderBreadcrumbsNavigator({
         <BreadcrumbPage>
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-1">
-              {activeWorkflow?.name}
+              {activeWorkflow.data.name}
               <ChevronDownIcon className="size-3.5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">

@@ -26,7 +26,33 @@
     "rules": {
       "recommended": true,
       "suspicious": {
-        "noUnknownAtRules": "off"
+        "noUnknownAtRules": "off",
+        "noExplicitAny": "warn"
+      },
+      "correctness": {
+        "useImageSize": "off",
+        "useExhaustiveDependencies": "off"
+      },
+      "performance": {
+        "noImgElement": "info",
+        "noNamespaceImport": "info"
+      },
+      "nursery": {
+        "noSyncScripts": "off"
+      },
+      "style": {
+        "noNestedTernary": "off",
+        "noNonNullAssertion": "warn",
+        "noEnum": "off"
+      },
+      "complexity": {
+        "noExcessiveCognitiveComplexity": "warn",
+        "noVoid": "off"
+      },
+      "a11y": {
+        "noNoninteractiveElementInteractions": "off",
+        "useKeyWithClickEvents": "off",
+        "noStaticElementInteractions": "off"
       }
     },
     "domains": {

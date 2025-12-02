@@ -1,5 +1,3 @@
-/** biome-ignore-all lint/performance/noNamespaceImport: We can let this one slide, but just this one time */
-
 import { checkout, polar, portal, usage } from "@polar-sh/better-auth";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";

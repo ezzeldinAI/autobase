@@ -1,5 +1,3 @@
-/** biome-ignore-all lint/complexity/noVoid: false positive */
-/** biome-ignore-all lint/suspicious/noExplicitAny: false positive */
 import "server-only";
 
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";

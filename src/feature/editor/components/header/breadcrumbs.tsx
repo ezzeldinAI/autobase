@@ -19,7 +19,10 @@ export function EditorHeaderBreadcrumbs({
 }) {
   return (
     <BreadcrumbList
-      className={cn("flex w-full flex-row items-center gap-x-4", className)}
+      className={cn(
+        "hidden w-full flex-row items-center gap-x-1 md:flex md:gap-x-4",
+        className
+      )}
     >
       <BreadcrumbItem>
         <BreadcrumbLink asChild>

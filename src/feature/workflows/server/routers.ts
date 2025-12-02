@@ -1,4 +1,4 @@
-/** biome-ignore-all lint/style/noNonNullAssertion: false positive */
+import { createId } from "@paralleldrive/cuid2";
 import { TRPCError } from "@trpc/server";
 import type { Edge, Node } from "@xyflow/react";
 import { and, count, desc, eq, ilike } from "drizzle-orm";
@@ -31,6 +31,7 @@ export const workflowsRouter = createTRPCRouter({
         const [simpleWorkflow] = await db
           .insert(workflowsTable)
           .values({
+            id: createId(),
             name: generateSlug(3),
             userId: ctx.auth.user.id,
           })
@@ -50,6 +51,7 @@ export const workflowsRouter = createTRPCRouter({
       const [workflow] = await db
         .insert(workflowsTable)
         .values({
+          id: createId(),
           name: generateSlug(3),
           userId: ctx.auth.user.id,
         })
@@ -60,6 +62,7 @@ export const workflowsRouter = createTRPCRouter({
         .insert(nodesTable)
         .values([
           {
+            id: createId(),
             workflowId: workflow.id,
             name: NodeType.INITIAL,
             type: NodeType.INITIAL,
@@ -186,24 +189,24 @@ export const workflowsRouter = createTRPCRouter({
         const nodes: Node[] = result
           .filter((row) => row.nodeId !== null)
           .map((row) => ({
-            id: row.nodeId!,
+            id: row.nodeId as string,
             workflowId: result[0].id, // All nodes belong to this workflow
-            name: row.nodeName!,
-            type: row.nodeType!,
-            position: row.nodePosition! as { x: number; y: number },
-            data: (row.nodeData! as Record<string, unknown>) || {},
-            createdAt: row.nodeCreatedAt!,
-            updatedAt: row.nodeCreatedAt!,
+            name: row.nodeName as string,
+            type: row.nodeType as NodeType,
+            position: row.nodePosition as { x: number; y: number },
+            data: (row.nodeData as Record<string, unknown>) || {},
+            createdAt: row.nodeCreatedAt,
+            updatedAt: row.nodeCreatedAt,
           }));
 
         const edges: Edge[] = result
           .filter((row) => row.edgeId !== null)
           .map((row) => ({
-            id: row.edgeId!,
-            source: row.fromNodeId!,
-            target: row.toNodeId!,
-            sourceHandle: row.sourceHandle!,
-            targetHandle: row.targetHandle!,
+            id: row.edgeId as string,
+            source: row.fromNodeId as string,
+            target: row.toNodeId as string,
+            sourceHandle: row.sourceHandle,
+            targetHandle: row.targetHandle,
           }));
 
         const workflow: Workflow & { nodes: Node[]; edges: Edge[] } = {

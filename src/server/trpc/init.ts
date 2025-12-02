@@ -57,3 +57,6 @@ export const premiumProcedure = protectedProcedure.use(
     });
   }
 );
+
+// TODO Add Sentry Monitoring, Tracing, Breadcrumbs, and Metering to have a Bird's eye view of everything
+// also include the userId to and useful contextual data for better debuggability

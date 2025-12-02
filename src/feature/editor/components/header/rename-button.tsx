@@ -19,8 +19,15 @@ import {
   useSuspenseWorkflow,
   useUpdateWorkflowName,
 } from "@/feature/workflows/hooks/use-workflows";
+import { cn } from "@/lib/utils";
 
-export function EditorRenameButton({ workflowId }: { workflowId: string }) {
+export function EditorRenameButton({
+  workflowId,
+  className,
+}: {
+  workflowId: string;
+  className?: string;
+}) {
   const { data: workflow } = useSuspenseWorkflow(workflowId);
 
   const renameWorkflow = useUpdateWorkflowName();
@@ -51,6 +58,7 @@ export function EditorRenameButton({ workflowId }: { workflowId: string }) {
     <Dialog>
       <DialogTrigger asChild>
         <Button
+          className={cn("", className)}
           disabled={false}
           onClick={() => {
             console.log(`save workflow with id ${workflowId}`);
